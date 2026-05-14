@@ -34,8 +34,19 @@ This repo includes:
 - `wsgi.py` for WSGI hosting
 - `Procfile` for platforms that use a process file
 - `gunicorn` in `requirements.txt`
+- `render.yaml` for Render deployment
 
 The app reads the `PORT` environment variable automatically in production.
+
+## Deploy on Render
+
+1. Push this repo to GitHub.
+2. Sign in to Render and choose `New > Web Service`.
+3. Connect the GitHub repo `lead-hunter`.
+4. Render can read `render.yaml` automatically, or you can use:
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn app:app`
+5. After deploy, Render gives you a public `onrender.com` link you can open on your phone.
 
 ## Tests
 
