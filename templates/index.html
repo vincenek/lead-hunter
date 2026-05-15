@@ -527,6 +527,7 @@
           <option value="USA">🇺🇸 United States</option>
           <option value="Canada">🇨🇦 Canada</option>
           <option value="Australia">🇦🇺 Australia</option>
+          <option value="Nigeria">🇳🇬 Nigeria</option>
         </select>
       </div>
       <div>
@@ -882,11 +883,12 @@
 
   let _cityInterval = null;
   const CITIES_BY_REGION = {
-    'Worldwide': ['London','New York','Los Angeles','Toronto','Sydney','Chicago','Manchester','Houston','Melbourne','Birmingham','Dallas','Vancouver'],
+    'Worldwide': ['London','New York','Los Angeles','Toronto','Sydney','Lagos','Chicago','Manchester','Houston','Melbourne','Abuja','Vancouver'],
     'UK': ['London','Manchester','Birmingham','Leeds','Glasgow','Liverpool','Bristol','Sheffield','Edinburgh','Cardiff'],
     'USA': ['New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','Austin'],
     'Canada': ['Toronto','Vancouver','Montreal','Calgary','Edmonton','Ottawa'],
     'Australia': ['Sydney','Melbourne','Brisbane','Perth','Adelaide','Gold Coast'],
+    'Nigeria': ['Lagos','Abuja','Port Harcourt','Ibadan','Kano','Benin City','Enugu','Abeokuta'],
   };
 
   function startCityScanner(region) {

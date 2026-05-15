@@ -71,14 +71,23 @@ CITY_BBOXES = {
     'Adelaide':    (-35.19, -34.75, 138.46, 138.73),
     'Gold Coast':  (-28.17, -27.92, 153.27, 153.55),
     'Canberra':    (-35.49, -35.15, 148.99, 149.26),
+    'Lagos':        (6.36,   6.69,   3.05,   3.56),
+    'Abuja':        (8.90,   9.15,   7.25,   7.60),
+    'Port Harcourt':(4.73,   4.93,   6.90,   7.18),
+    'Ibadan':       (7.30,   7.50,   3.75,   4.05),
+    'Kano':         (11.90, 12.10,   8.38,   8.65),
+    'Benin City':   (6.20,   6.45,   5.50,   5.75),
+    'Enugu':        (6.36,   6.52,   7.42,   7.62),
+    'Abeokuta':     (7.05,   7.25,   3.25,   3.47),
 }
 
 REGIONS = {
     'Worldwide': [
         ('London', 'UK'), ('New York', 'USA'), ('Manchester', 'UK'),
         ('Los Angeles', 'USA'), ('Toronto', 'Canada'), ('Sydney', 'Australia'),
-        ('Chicago', 'USA'), ('Birmingham', 'UK'), ('Melbourne', 'Australia'),
-        ('Houston', 'USA'), ('Vancouver', 'Canada'), ('Leeds', 'UK'),
+        ('Lagos', 'Nigeria'), ('Chicago', 'USA'), ('Birmingham', 'UK'),
+        ('Melbourne', 'Australia'), ('Houston', 'USA'), ('Vancouver', 'Canada'),
+        ('Abuja', 'Nigeria'),
     ],
     'UK': [
         ('London', 'UK'), ('Manchester', 'UK'), ('Birmingham', 'UK'),
@@ -102,6 +111,11 @@ REGIONS = {
         ('Sydney', 'Australia'), ('Melbourne', 'Australia'), ('Brisbane', 'Australia'),
         ('Perth', 'Australia'), ('Adelaide', 'Australia'), ('Gold Coast', 'Australia'),
         ('Canberra', 'Australia'),
+    ],
+    'Nigeria': [
+        ('Lagos', 'Nigeria'), ('Abuja', 'Nigeria'), ('Port Harcourt', 'Nigeria'),
+        ('Ibadan', 'Nigeria'), ('Kano', 'Nigeria'), ('Benin City', 'Nigeria'),
+        ('Enugu', 'Nigeria'), ('Abeokuta', 'Nigeria'),
     ],
 }
 
