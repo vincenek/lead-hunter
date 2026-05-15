@@ -4,14 +4,14 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn --timeout 120 app:app
     autoDeploy: true
     envVars:
       - key: OVERPASS_QUERY_TIMEOUT
-        value: "18"
+        value: "10"
       - key: OVERPASS_REQUEST_TIMEOUT
-        value: "22"
+        value: "12"
       - key: CITY_RESULT_LIMIT
-        value: "30"
+        value: "20"
       - key: SEARCH_TARGET_LEADS
-        value: "18"
+        value: "10"

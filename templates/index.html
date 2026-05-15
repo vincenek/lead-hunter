@@ -533,8 +533,8 @@
       <div>
         <label for="max_cities">Cities to scan</label>
         <select id="max_cities">
-          <option value="2">2 cities</option>
-          <option value="3" selected>3 cities</option>
+          <option value="2" selected>2 cities</option>
+          <option value="3">3 cities</option>
           <option value="4">4 cities</option>
           <option value="6">6 cities</option>
           <option value="8">8 cities</option>
@@ -685,7 +685,7 @@
       }
 
     } catch (e) {
-      showError('Search could not finish. Try 2-3 cities first, then search again.');
+      showError('Search could not finish. Start with 2 cities, then try again.');
     } finally {
       stopCityScanner();
       hideLoader();

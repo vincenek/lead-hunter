@@ -18,10 +18,10 @@ HEADERS = {
     'User-Agent': 'LeadHunterApp/1.0 (personal lead generation tool)',
     'Accept': 'application/json',
 }
-OVERPASS_QUERY_TIMEOUT = int(os.environ.get('OVERPASS_QUERY_TIMEOUT', '20'))
-OVERPASS_REQUEST_TIMEOUT = int(os.environ.get('OVERPASS_REQUEST_TIMEOUT', '25'))
-CITY_RESULT_LIMIT = int(os.environ.get('CITY_RESULT_LIMIT', '35'))
-SEARCH_TARGET_LEADS = int(os.environ.get('SEARCH_TARGET_LEADS', '25'))
+OVERPASS_QUERY_TIMEOUT = int(os.environ.get('OVERPASS_QUERY_TIMEOUT', '12'))
+OVERPASS_REQUEST_TIMEOUT = int(os.environ.get('OVERPASS_REQUEST_TIMEOUT', '14'))
+CITY_RESULT_LIMIT = int(os.environ.get('CITY_RESULT_LIMIT', '25'))
+SEARCH_TARGET_LEADS = int(os.environ.get('SEARCH_TARGET_LEADS', '12'))
 IS_RENDER = bool(os.environ.get('RENDER'))
 PUBLIC_EMAIL_DOMAINS = {
     'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'live.com', 'icloud.com',

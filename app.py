@@ -44,7 +44,7 @@ def search():
     data = request.get_json(silent=True) or {}
     category = (data.get('category') or '').strip()
     region = (data.get('region') or 'Worldwide').strip()
-    max_cities = _coerce_max_cities(data.get('max_cities', 3), default=3)
+    max_cities = _coerce_max_cities(data.get('max_cities', 2), default=2)
     actionable_only = _coerce_bool(data.get('actionable_only'), default=True)
     email_only = _coerce_bool(data.get('email_only'), default=False)
     hide_contacted = _coerce_bool(data.get('hide_contacted'), default=True)
