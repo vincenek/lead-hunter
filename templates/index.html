@@ -388,6 +388,11 @@
       color: #7dd3a4;
     }
 
+    .btn-small.whatsapp {
+      border-color: rgba(37, 211, 102, 0.4);
+      color: #25d366;
+    }
+
     .btn-small.undo {
       border-color: rgba(255,179,71,0.35);
       color: #ffb347;
@@ -527,10 +532,11 @@
       <div>
         <label for="max_cities">Cities to scan</label>
         <select id="max_cities">
-          <option value="3">3 cities</option>
-          <option value="6" selected>6 cities</option>
-          <option value="9">9 cities</option>
-          <option value="12">12 cities</option>
+          <option value="2">2 cities</option>
+          <option value="3" selected>3 cities</option>
+          <option value="4">4 cities</option>
+          <option value="6">6 cities</option>
+          <option value="8">8 cities</option>
         </select>
       </div>
       <div>
@@ -659,10 +665,13 @@
         })
       });
 
-      const data = await resp.json();
+      const contentType = resp.headers.get('content-type') || '';
+      const data = contentType.includes('application/json')
+        ? await resp.json()
+        : { error: await resp.text() };
 
       if (!resp.ok) {
-        showError(data.error || 'Something went wrong.');
+        showError(data.error || 'Search failed. Try fewer cities and search again.');
         return;
       }
 
@@ -675,7 +684,7 @@
       }
 
     } catch (e) {
-      showError('Could not connect to the server. Make sure it is running.');
+      showError('Search could not finish. Try 2-3 cities first, then search again.');
     } finally {
       stopCityScanner();
       hideLoader();
@@ -764,6 +773,10 @@
       ? `<button class="btn-small" onclick='copyValue(this, ${JSON.stringify(lead.phone)}, "Copied #")'>Copy #</button>`
       : '';
 
+    const whatsappBtn = lead.phone
+      ? `<button class="btn-small whatsapp" onclick='openWhatsApp(${JSON.stringify(lead.name || '')}, ${JSON.stringify(lead.phone)})'>WhatsApp</button>`
+      : '';
+
     const copyEmailBtn = lead.email
       ? `<button class="btn-small" onclick='copyValue(this, ${JSON.stringify(lead.email)}, "Copied email")'>Copy email</button>`
       : '';
@@ -782,6 +795,7 @@
       <div style="margin-top:6px">${tag} ${cityTag} ${sourceTag}</div>
       <div class="lead-actions">
         ${copyPhoneBtn}
+        ${whatsappBtn}
         ${copyEmailBtn}
         ${contactBtn}
       </div>
@@ -800,6 +814,15 @@
         btn.classList.remove('copied');
       }, 2000);
     });
+  }
+
+  function openWhatsApp(name, phone) {
+    const digits = (phone || '').replace(/[^\d+]/g, '');
+    const normalized = digits.startsWith('+') ? digits.slice(1) : digits;
+    if (!normalized) return;
+
+    const message = `Hi ${name || ''}, I came across your business and wanted to ask if you need help with a website or improving your current online presence.`.trim();
+    window.open(`https://wa.me/${normalized}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   }
 
   async function toggleContacted(leadId, shouldMark) {

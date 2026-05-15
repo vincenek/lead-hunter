@@ -6,3 +6,12 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     autoDeploy: true
+    envVars:
+      - key: OVERPASS_QUERY_TIMEOUT
+        value: "18"
+      - key: OVERPASS_REQUEST_TIMEOUT
+        value: "22"
+      - key: CITY_RESULT_LIMIT
+        value: "30"
+      - key: SEARCH_TARGET_LEADS
+        value: "18"

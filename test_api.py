@@ -48,7 +48,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(payload['total'], 1)
         self.assertEqual(payload['hot'], 1)
         self.assertEqual(payload['with_contact'], 1)
-        search_region_mock.assert_called_once_with('barber', 'Worldwide', 6)
+        search_region_mock.assert_called_once_with('barber', 'Worldwide', 3)
 
     @patch('app.search_region')
     @patch('app.list_contacted', return_value={})

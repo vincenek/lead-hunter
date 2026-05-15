@@ -5,6 +5,7 @@ No API key needed. Bounding boxes hardcoded for reliability.
 import random
 import time
 import hashlib
+import os
 
 import requests
 from requests import RequestException
@@ -17,6 +18,11 @@ HEADERS = {
     'User-Agent': 'LeadHunterApp/1.0 (personal lead generation tool)',
     'Accept': 'application/json',
 }
+OVERPASS_QUERY_TIMEOUT = int(os.environ.get('OVERPASS_QUERY_TIMEOUT', '20'))
+OVERPASS_REQUEST_TIMEOUT = int(os.environ.get('OVERPASS_REQUEST_TIMEOUT', '25'))
+CITY_RESULT_LIMIT = int(os.environ.get('CITY_RESULT_LIMIT', '35'))
+SEARCH_TARGET_LEADS = int(os.environ.get('SEARCH_TARGET_LEADS', '25'))
+IS_RENDER = bool(os.environ.get('RENDER'))
 PUBLIC_EMAIL_DOMAINS = {
     'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'live.com', 'icloud.com',
     'aol.com', 'proton.me', 'protonmail.com', 'gmx.com', 'msn.com', 'me.com',
@@ -222,7 +228,7 @@ def _fetch_overpass(query):
     try:
         for url in OVERPASS_URLS:
             try:
-                resp = session.post(url, data={'data': query}, headers=HEADERS, timeout=45)
+                resp = session.post(url, data={'data': query}, headers=HEADERS, timeout=OVERPASS_REQUEST_TIMEOUT)
                 resp.raise_for_status()
                 return resp.json()
             except ValueError as exc:
@@ -249,11 +255,11 @@ def _search_city(category, city, country):
 
     for tag_key, tag_val in _osm_tags(category)[:2]:
         query = (
-            f'[out:json][timeout:30];'
+            f'[out:json][timeout:{OVERPASS_QUERY_TIMEOUT}];'
             f'(node["{tag_key}"="{tag_val}"]({bb});'
             f'way["{tag_key}"="{tag_val}"]({bb});'
             f'relation["{tag_key}"="{tag_val}"]({bb}););'
-            f'out body 50;'
+            f'out body {CITY_RESULT_LIMIT};'
         )
         try:
             payload = _fetch_overpass(query)
@@ -308,10 +314,13 @@ def _search_city(category, city, country):
                     'source':      'OpenStreetMap',
                 })
 
+                if len(leads) >= CITY_RESULT_LIMIT:
+                    return leads
+
         except Exception as ex:
             print(f'[overpass] {city}: {ex}')
 
-        time.sleep(1)
+        time.sleep(0.35 if IS_RENDER else 1)
 
     return leads
 
@@ -332,7 +341,12 @@ def search_region(category, region, max_cities=6):
             if key and key not in seen_global:
                 seen_global.add(key)
                 all_leads.append(lead)
-        time.sleep(random.uniform(0.5, 1.0))
+
+        hot_count = sum(1 for lead in all_leads if lead.get('priority') == 'HOT')
+        if hot_count >= SEARCH_TARGET_LEADS:
+            break
+
+        time.sleep(random.uniform(0.15, 0.35) if IS_RENDER else random.uniform(0.5, 1.0))
 
     priority_order = {'HOT': 0, 'WARM': 1, 'LOW': 2}
     all_leads.sort(

@@ -13,7 +13,7 @@ def _coerce_max_cities(value, default=6):
         parsed = int(value)
     except (TypeError, ValueError):
         parsed = default
-    return max(2, min(parsed, 12))
+    return max(2, min(parsed, 8))
 
 
 def _coerce_bool(value, default=False):
@@ -44,7 +44,7 @@ def search():
     data = request.get_json(silent=True) or {}
     category = (data.get('category') or '').strip()
     region = (data.get('region') or 'Worldwide').strip()
-    max_cities = _coerce_max_cities(data.get('max_cities', 6))
+    max_cities = _coerce_max_cities(data.get('max_cities', 3), default=3)
     actionable_only = _coerce_bool(data.get('actionable_only'), default=True)
     email_only = _coerce_bool(data.get('email_only'), default=False)
     hide_contacted = _coerce_bool(data.get('hide_contacted'), default=True)
