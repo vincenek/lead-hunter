@@ -107,7 +107,7 @@ class ApiTests(unittest.TestCase):
 
     def test_export_writes_csv(self):
         response = self.client.post('/export', json={'leads': [
-            {'lead_id': 'abc', 'name': 'Lead One', 'phone': '123'},
+            {'lead_id': 'abc', 'name': 'Lead One', 'phone': '123', 'instagram': 'https://www.instagram.com/example'},
         ]})
 
         self.assertEqual(response.status_code, 200)
@@ -116,6 +116,7 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(rows[0]['lead_id'], 'abc')
         self.assertEqual(rows[0]['name'], 'Lead One')
         self.assertEqual(rows[0]['phone'], '123')
+        self.assertEqual(rows[0]['instagram'], 'https://www.instagram.com/example')
 
     def test_index_renders_business_type_suggestions(self):
         response = self.client.get('/')

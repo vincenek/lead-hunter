@@ -24,7 +24,13 @@ class ScraperTests(unittest.TestCase):
     def test_search_city_tries_second_tag_and_normalizes_website(self, build_session_mock, _sleep_mock):
         session = self._session([
             self._response([
-                {'type': 'node', 'id': 101, 'tags': {'name': 'Clip Joint', 'website': 'clipjoint.example', 'phone': '1234'}}
+                {'type': 'node', 'id': 101, 'tags': {
+                    'name': 'Clip Joint',
+                    'website': 'clipjoint.example',
+                    'phone': '1234',
+                    'contact:instagram': 'clipjointcuts',
+                    'facebook': 'clipjointbarbers'
+                }}
             ]),
             self._response([
                 {'type': 'way', 'id': 202, 'tags': {'name': 'Fade House', 'contact:phone': '5678'}}
@@ -38,6 +44,8 @@ class ScraperTests(unittest.TestCase):
         self.assertEqual(session.post.call_count, 2)
         self.assertEqual(leads[0]['website'], 'https://clipjoint.example')
         self.assertEqual(leads[0]['priority'], 'LOW')
+        self.assertEqual(leads[0]['instagram'], 'https://www.instagram.com/clipjointcuts')
+        self.assertEqual(leads[0]['facebook'], 'https://www.facebook.com/clipjointbarbers')
         self.assertEqual(leads[1]['priority'], 'HOT')
         self.assertTrue(leads[1]['has_contact'])
         self.assertTrue(leads[1]['profile_link'].startswith('https://www.openstreetmap.org/'))
@@ -58,6 +66,18 @@ class ScraperTests(unittest.TestCase):
         self.assertEqual(leads[0]['website'], 'https://northstudio.co.uk')
         self.assertEqual(leads[0]['website_source'], 'email_domain')
         self.assertEqual(leads[0]['priority'], 'LOW')
+
+    def test_extract_socials_uses_phone_for_whatsapp_and_normalizes_profiles(self):
+        socials = scraper._extract_socials({
+            'contact:telegram': '@northstudio',
+            'instagram': 'northstudiocuts',
+            'contact:tiktok': 'northstudio'
+        }, '+234 801 234 5678')
+
+        self.assertEqual(socials['whatsapp'], 'https://wa.me/2348012345678')
+        self.assertEqual(socials['telegram'], 'https://t.me/northstudio')
+        self.assertEqual(socials['instagram'], 'https://www.instagram.com/northstudiocuts')
+        self.assertEqual(socials['tiktok'], 'https://www.tiktok.com/@northstudio')
 
     @patch('scraper.time.sleep', return_value=None)
     @patch('scraper._build_session')

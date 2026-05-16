@@ -393,6 +393,31 @@
       color: #25d366;
     }
 
+    .btn-small.telegram {
+      border-color: rgba(37, 164, 237, 0.4);
+      color: #25a4ed;
+    }
+
+    .btn-small.instagram {
+      border-color: rgba(225, 48, 108, 0.4);
+      color: #e1306c;
+    }
+
+    .btn-small.facebook {
+      border-color: rgba(24, 119, 242, 0.4);
+      color: #1877f2;
+    }
+
+    .btn-small.tiktok {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #f5f5f5;
+    }
+
+    .btn-small.x {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #f5f5f5;
+    }
+
     .btn-small.undo {
       border-color: rgba(255,179,71,0.35);
       color: #ffb347;
@@ -775,11 +800,31 @@
       : '';
 
     const whatsappBtn = lead.phone
-      ? `<button class="btn-small whatsapp" onclick='openWhatsApp(${JSON.stringify(lead.name || '')}, ${JSON.stringify(lead.phone)})'>WhatsApp</button>`
+      ? `<button class="btn-small whatsapp" onclick='openWhatsApp(${JSON.stringify(lead.name || '')}, ${JSON.stringify(lead.phone)}, ${JSON.stringify(lead.whatsapp || '')})'>WhatsApp</button>`
       : '';
 
     const copyEmailBtn = lead.email
       ? `<button class="btn-small" onclick='copyValue(this, ${JSON.stringify(lead.email)}, "Copied email")'>Copy email</button>`
+      : '';
+
+    const telegramBtn = lead.telegram
+      ? `<button class="btn-small telegram" onclick='openExternal(${JSON.stringify(lead.telegram)})'>Telegram</button>`
+      : '';
+
+    const instagramBtn = lead.instagram
+      ? `<button class="btn-small instagram" onclick='openExternal(${JSON.stringify(lead.instagram)})'>Instagram</button>`
+      : '';
+
+    const facebookBtn = lead.facebook
+      ? `<button class="btn-small facebook" onclick='openExternal(${JSON.stringify(lead.facebook)})'>Facebook</button>`
+      : '';
+
+    const tiktokBtn = lead.tiktok
+      ? `<button class="btn-small tiktok" onclick='openExternal(${JSON.stringify(lead.tiktok)})'>TikTok</button>`
+      : '';
+
+    const xBtn = lead.x
+      ? `<button class="btn-small x" onclick='openExternal(${JSON.stringify(lead.x)})'>X</button>`
       : '';
 
     const contactBtn = lead.contacted
@@ -798,6 +843,11 @@
         ${copyPhoneBtn}
         ${whatsappBtn}
         ${copyEmailBtn}
+        ${telegramBtn}
+        ${instagramBtn}
+        ${facebookBtn}
+        ${tiktokBtn}
+        ${xBtn}
         ${contactBtn}
       </div>
     `;
@@ -817,7 +867,19 @@
     });
   }
 
-  function openWhatsApp(name, phone) {
+  function openExternal(url) {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener');
+  }
+
+  function openWhatsApp(name, phone, directUrl) {
+    if (directUrl) {
+      const message = `Hi ${name || ''}, I came across your business and wanted to ask if you need help with a website or improving your current online presence.`.trim();
+      const separator = directUrl.includes('?') ? '&' : '?';
+      window.open(`${directUrl}${separator}text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+      return;
+    }
+
     const digits = (phone || '').replace(/[^\d+]/g, '');
     const normalized = digits.startsWith('+') ? digits.slice(1) : digits;
     if (!normalized) return;

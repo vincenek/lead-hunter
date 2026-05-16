@@ -28,6 +28,14 @@ PUBLIC_EMAIL_DOMAINS = {
     'aol.com', 'proton.me', 'protonmail.com', 'gmx.com', 'msn.com', 'me.com',
     'btinternet.com', 'googlemail.com', 'ymail.com',
 }
+SOCIAL_KEYS = {
+    'whatsapp': ('contact:whatsapp', 'whatsapp'),
+    'telegram': ('contact:telegram', 'telegram'),
+    'instagram': ('contact:instagram', 'instagram'),
+    'facebook': ('contact:facebook', 'facebook', 'contact:meta', 'meta'),
+    'tiktok': ('contact:tiktok', 'tiktok'),
+    'x': ('contact:x', 'x', 'contact:twitter', 'twitter'),
+}
 
 # Bounding boxes: (south, north, west, east)
 CITY_BBOXES = {
@@ -209,6 +217,66 @@ def _first_present(tags, keys):
     return None
 
 
+def _normalize_phone_for_chat(phone):
+    if not phone:
+        return None
+    cleaned = ''.join(ch for ch in phone.strip() if ch.isdigit() or ch == '+')
+    if not cleaned:
+        return None
+    return cleaned[1:] if cleaned.startswith('+') else cleaned
+
+
+def _normalize_social_url(platform, value):
+    if not value:
+        return None
+
+    cleaned = value.strip()
+    if not cleaned:
+        return None
+
+    if cleaned.startswith(('http://', 'https://')):
+        return cleaned
+
+    if platform == 'whatsapp':
+        digits = _normalize_phone_for_chat(cleaned)
+        return f'https://wa.me/{digits}' if digits else None
+
+    handle = cleaned.lstrip('@').strip('/')
+    if not handle:
+        return None
+
+    if platform == 'telegram':
+        return f'https://t.me/{handle}'
+    if platform == 'instagram':
+        return f'https://www.instagram.com/{handle}'
+    if platform == 'facebook':
+        return f'https://www.facebook.com/{handle}'
+    if platform == 'tiktok':
+        handle = handle if handle.startswith('@') else f'@{handle}'
+        return f'https://www.tiktok.com/{handle}'
+    if platform == 'x':
+        return f'https://x.com/{handle}'
+
+    return None
+
+
+def _extract_socials(tags, phone):
+    socials = {}
+
+    for platform, keys in SOCIAL_KEYS.items():
+        raw_value = _first_present(tags, keys)
+        url = _normalize_social_url(platform, raw_value)
+        if url:
+            socials[platform] = url
+
+    if 'whatsapp' not in socials:
+        whatsapp_url = _normalize_social_url('whatsapp', phone)
+        if whatsapp_url:
+            socials['whatsapp'] = whatsapp_url
+
+    return socials
+
+
 def _lead_id(name, city, country, address, phone, email):
     base = '||'.join([
         (name or '').strip().lower(),
@@ -290,6 +358,7 @@ def _search_city(category, city, country):
                 email = _first_present(t, ('email', 'contact:email'))
                 website = _normalize_website(t.get('website') or t.get('contact:website') or t.get('url'))
                 email_domain = _email_domain(email)
+                socials = _extract_socials(t, phone)
                 website_source = 'osm' if website else None
                 if not website and email_domain and not _is_public_email_domain(email_domain):
                     website = f'https://{email_domain}'
@@ -317,6 +386,13 @@ def _search_city(category, city, country):
                     'email_domain': email_domain,
                     'website':     website,
                     'website_source': website_source,
+                    'whatsapp':    socials.get('whatsapp'),
+                    'telegram':    socials.get('telegram'),
+                    'instagram':   socials.get('instagram'),
+                    'facebook':    socials.get('facebook'),
+                    'tiktok':      socials.get('tiktok'),
+                    'x':           socials.get('x'),
+                    'social_count': len(socials),
                     'has_website': has_website,
                     'has_contact': has_contact,
                     'needs_website': not has_website,

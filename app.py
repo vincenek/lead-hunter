@@ -122,7 +122,12 @@ def export():
     leads = data.get('leads', [])
 
     output = io.StringIO()
-    fieldnames = ['lead_id', 'name', 'phone', 'email', 'address', 'city', 'country', 'website', 'website_source', 'has_website', 'has_contact', 'needs_website', 'priority', 'contacted', 'source', 'profile_link']
+    fieldnames = [
+        'lead_id', 'name', 'phone', 'email', 'address', 'city', 'country',
+        'website', 'website_source', 'whatsapp', 'telegram', 'instagram',
+        'facebook', 'tiktok', 'x', 'social_count', 'has_website', 'has_contact',
+        'needs_website', 'priority', 'contacted', 'source', 'profile_link'
+    ]
     writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction='ignore')
     writer.writeheader()
     for lead in leads:
